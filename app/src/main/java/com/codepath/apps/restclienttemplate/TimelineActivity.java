@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -69,6 +70,8 @@ public class TimelineActivity extends AppCompatActivity {
             // Compose new tweet
             case R.id.compose:
                 Log.i(TAG, "Compose a new tweet");
+                Intent compose = new Intent(this, ComposeActivity.class);
+                startActivity(compose);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
