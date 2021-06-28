@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
@@ -51,6 +53,27 @@ public class TimelineActivity extends AppCompatActivity {
         });
 
         populateHomeTimeline();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handles press on the action bar items
+        switch (item.getItemId()) {
+            // Compose new tweet
+            case R.id.compose:
+                Log.i(TAG, "Compose a new tweet");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
     }
 
     private void populateHomeTimeline() {
