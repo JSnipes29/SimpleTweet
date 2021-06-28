@@ -42,6 +42,13 @@ public class TimelineActivity extends AppCompatActivity {
         // Configure the recycler view
         binding.rvTweets.setLayoutManager(new LinearLayoutManager(this));
         binding.rvTweets.setAdapter(adapter);
+        binding.btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                client.clearAccessToken();
+                finish();
+            }
+        });
 
         populateHomeTimeline();
     }
