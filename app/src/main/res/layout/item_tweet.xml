@@ -20,18 +20,35 @@
         android:id="@+id/tvScreenName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:layout_marginStart="5dp"
-        android:layout_toEndOf="@+id/ivProfileImage"
+        android:layout_toEndOf="@+id/tvName"
         tools:text="user4486" />
 
     <TextView
         android:id="@+id/tvBody"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvScreenName"
+        android:layout_below="@+id/tvName"
         android:layout_marginStart="5dp"
         android:layout_marginTop="2dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         tools:text="This is my first tweet!!!" />
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:textStyle="bold"
+        tools:text="name" />
+
+    <TextView
+        android:id="@+id/tvTimeSince"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        tools:text="9h" />
 </RelativeLayout>
