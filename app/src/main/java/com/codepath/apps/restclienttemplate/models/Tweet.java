@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate.models;
 
 import android.text.format.DateUtils;
+import android.util.Log;
 
 import com.facebook.stetho.inspector.jsonrpc.JsonRpcException;
 
@@ -21,18 +22,32 @@ public class Tweet {
     public String body;
     public String createdAt;
     public User user;
+    public List<Media> media;
 
     // empty constructor needed by Parceler library
     public Tweet() {};
 
+    // Get a tweet from a JSON Object
     public static Tweet fromJson(JSONObject jSonObject) throws JSONException {
         Tweet tweet = new Tweet();
         tweet.body = jSonObject.getString("text");
         tweet.createdAt = jSonObject.getString("created_at");
         tweet.user = User.fromJson(jSonObject.getJSONObject("user"));
+        try {
+            JSONObject entries = jSonObject.getJSONObject("extended_entities");
+            Log.i("Tweet", "We have entries!");
+            JSONArray media = entries.getJSONArray("media");
+            Log.i("Tweet", "We have media!");
+            tweet.media = Media.fromJsonArray(media);
+
+        } catch (Exception e) {
+            // No media in the tweet
+            tweet.media = null;
+        }
         return tweet;
     }
 
+    // Get a list of tweets from a JSON array
     public static List<Tweet> fromJsonArray(JSONArray jsonArray) throws JSONException {
         List<Tweet> tweets = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++) {
