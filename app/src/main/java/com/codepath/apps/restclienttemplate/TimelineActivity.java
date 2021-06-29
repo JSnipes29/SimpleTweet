@@ -34,6 +34,7 @@ public class TimelineActivity extends AppCompatActivity {
     List<Tweet> tweets;
     TweetsAdapter adapter;
     ActivityTimelineBinding binding;
+    MenuItem miActionProgressItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +92,8 @@ public class TimelineActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     Log.e(TAG, "Json exception", e);
+                } finally {
+                    hideProgressBar();
                 }
                 // Call setRefreshing(false) to signal refresh has finished
                 binding.swipeContainer.setRefreshing(false);
@@ -107,6 +110,14 @@ public class TimelineActivity extends AppCompatActivity {
         // Inflate the menu
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+        showProgressBar();
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -151,6 +162,9 @@ public class TimelineActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     Log.e(TAG, "Json exception", e);
+                } finally {
+                    Log.i(TAG, "Hiding progress bar");
+                    hideProgressBar();
                 }
             }
 
@@ -159,5 +173,15 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.e(TAG,"onFailure! " + response, throwable);
             }
         });
+    }
+
+    public void showProgressBar() {
+        // Show progress item
+        miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // Hide progress item
+        miActionProgressItem.setVisible(false);
     }
 }
