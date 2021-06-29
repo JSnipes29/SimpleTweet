@@ -3,6 +3,7 @@ package com.codepath.apps.restclienttemplate.models;
 import android.text.format.DateUtils;
 import android.util.Log;
 
+import com.codepath.apps.restclienttemplate.TimelineActivity;
 import com.facebook.stetho.inspector.jsonrpc.JsonRpcException;
 
 import org.json.JSONArray;
@@ -23,6 +24,7 @@ public class Tweet {
     public String createdAt;
     public User user;
     public List<Media> media;
+    public int id;
 
     // empty constructor needed by Parceler library
     public Tweet() {};
@@ -32,6 +34,11 @@ public class Tweet {
         Tweet tweet = new Tweet();
         tweet.body = jSonObject.getString("text");
         tweet.createdAt = jSonObject.getString("created_at");
+        tweet.id = jSonObject.getInt("id");
+        Log.i("TweetID","ID: " + tweet.id);
+        if (tweet.id > 1 && tweet.id < TimelineActivity.maxId) {
+            TimelineActivity.maxId = tweet.id - 1;
+        }
         tweet.user = User.fromJson(jSonObject.getJSONObject("user"));
         try {
             JSONObject entries = jSonObject.getJSONObject("extended_entities");

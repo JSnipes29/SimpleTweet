@@ -35,6 +35,9 @@ public class TimelineActivity extends AppCompatActivity {
     TweetsAdapter adapter;
     ActivityTimelineBinding binding;
     MenuItem miActionProgressItem;
+    EndlessRecyclerViewScrollListener scrollListener;
+    public static int maxId;
+    private final int REFRESH = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +46,25 @@ public class TimelineActivity extends AppCompatActivity {
         View view = binding.getRoot();
         setContentView(view);
 
-
         client = TwitterApp.getRestClient(this);
         // Initialize the list of tweets and adapter
         tweets = new ArrayList<>();
         adapter = new TweetsAdapter(this, tweets);
+        maxId  = Integer.MAX_VALUE;
         // Configure the recycler view
-        binding.rvTweets.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        binding.rvTweets.setLayoutManager(linearLayoutManager);
         binding.rvTweets.setAdapter(adapter);
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextDataFromApi(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        binding.rvTweets.addOnScrollListener(scrollListener);
         binding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +104,7 @@ public class TimelineActivity extends AppCompatActivity {
                 try {
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
                     adapter.notifyDataSetChanged();
+                    scrollListener.resetState();
                 } catch (JSONException e) {
                     Log.e(TAG, "Json exception", e);
                 } finally {
@@ -183,5 +198,40 @@ public class TimelineActivity extends AppCompatActivity {
     public void hideProgressBar() {
         // Hide progress item
         miActionProgressItem.setVisible(false);
+    }
+    // Append the next page of data into the adapter
+    // This method probably sends out a network request and appends new data items to your adapter.
+    public void loadNextDataFromApi(int offset) {
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
+        //populateHomeTimeline(maxId);
+        Log.i(TAG, "In load: " + maxId);
+
+        showProgressBar();
+        client.getHomeTimeline(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                Log.i(TAG, "onSuccess! " + json.toString());
+                JSONArray jsonArray = json.jsonArray;
+                try {
+                    tweets.addAll(Tweet.fromJsonArray(jsonArray));
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    Log.e(TAG, "Json exception", e);
+                } finally {
+                    Log.i(TAG, "Hiding progress bar");
+                    hideProgressBar();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.e(TAG,"onFailure! " + response, throwable);
+            }
+        }, maxId);
+        Log.i(TAG, "Max ID: " + maxId);
     }
 }
