@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,6 +103,10 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 ivMedia.getLayoutParams().height = tweet.media.get(0).height;
                 ivMedia.getLayoutParams().width = tweet.media.get(0).width;
                 Glide.with(context).load(tweet.media.get(0).url).into(ivMedia);
+                Log.i("Adapter", tweet.user.screenName + ": " + tweet.media.get(0).url);
+            } else {
+                ivMedia.getLayoutParams().height = 0;
+                ivMedia.getLayoutParams().width = 0;
             }
         }
     }
