@@ -1,8 +1,10 @@
 package com.codepath.apps.restclienttemplate.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -32,13 +36,15 @@ import okhttp3.Headers;
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder>{
 
     Context context;
+    Activity mContext;
     List<Tweet> tweets;
 
 
     // Pass in the context and list of tweets
-    public TweetsAdapter(Context context, List<Tweet> tweets) {
+    public TweetsAdapter(Context context, List<Tweet> tweets, Activity a) {
         this.tweets = tweets;
         this.context = context;
+        this.mContext = a;
     }
 
     // Clean all elements of the recycler
@@ -96,6 +102,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvName;
         TextView tvTimeSince;
         ImageView ivMedia;
+        TextView tvUserRetweeted;
         final ImageView ivRetweet;
         final ImageView ivLike;
         final TextView tvRetweetCount;
@@ -118,8 +125,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvRetweetCount = itemView.findViewById(R.id.tvRetweetCount);
             tvLikeCount = itemView.findViewById(R.id.tvLikeCount);
             client = TwitterApp.getRestClient(context);
+            tvUserRetweeted = itemView.findViewById(R.id.tvUserRetweeted);
         }
         public void bind(Tweet tweet) {
+            if (tweet.reTweet != null) {
+                tvUserRetweeted.setText(tweet.user.name + " Retweeted");
+                tvUserRetweeted.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
+                tweet = tweet.reTweet;
+            }
             tvBody.setText(tweet.body);
             tvScreenName.setText("@" + tweet.user.screenName);
             tvName.setText(tweet.user.name);
@@ -133,7 +146,18 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     Log.i(TAG, "Clicked tweet");
                     Intent intent = new Intent(context, DetailsTweetActivity.class);
                     intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(copy));
-                    context.startActivity(intent);
+                    Pair<View, String> p1 = Pair.create((View)ivProfileImage, "profile");
+                    Pair<View, String> p2 = Pair.create((View)tvScreenName, "screenName");
+                    Pair<View, String> p3 = Pair.create((View)tvName, "name");
+                    Pair<View, String> p4 = Pair.create((View)ivMedia, "media");
+                    Pair<View, String> p5 = Pair.create((View)ivLike, "like");
+                    Pair<View, String> p6 = Pair.create((View)ivRetweet, "retweet");
+                    Pair<View, String> p7 = Pair.create((View)tvBody, "body");
+                    Pair<View, String> p8 = Pair.create((View)tvRetweetCount, "retweetCount");
+                    Pair<View, String> p9 = Pair.create((View)tvRetweetCount, "likeCount");
+                    ActivityOptionsCompat options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation(mContext, p1, p2, p3, p4, p5, p6, p7, p8, p9);
+                    context.startActivity(intent, options.toBundle());
                 }
             });
             ivLike.setClickable(true);

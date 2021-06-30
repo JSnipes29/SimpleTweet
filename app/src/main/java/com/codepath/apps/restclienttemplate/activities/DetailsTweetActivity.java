@@ -40,9 +40,10 @@ public class DetailsTweetActivity extends AppCompatActivity {
         tweet = (Tweet) Parcels.unwrap(getIntent().getParcelableExtra(Tweet.class.getSimpleName()));
         binding.tvName.setText(tweet.user.name);
         binding.tvScreenName.setText("@" + tweet.user.screenName);
-        binding.tvRetweetCount.setText("" + tweet.retweets);
-        binding.tvLikeCount.setText("" + tweet.likes);
+        binding.tvRetweetCount.setText(tweet.formatCount(tweet.retweets));
+        binding.tvLikeCount.setText(Tweet.formatCount(tweet.likes));
         binding.tvBody.setText(tweet.body);
+        binding.tvTimeCreated.setText(tweet.createdAt);
         final Tweet copy = tweet;
         binding.ivLike.setClickable(true);
         if (tweet.liked) {

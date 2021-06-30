@@ -29,6 +29,7 @@ public class Tweet {
     public boolean liked;
     public List<Media> media;
     public BigInteger id;
+    public Tweet reTweet;
 
 
     // empty constructor needed by Parceler library
@@ -37,13 +38,20 @@ public class Tweet {
     // Get a tweet from a JSON Object
     public static Tweet fromJson(JSONObject jSonObject) throws JSONException {
         Tweet tweet = new Tweet();
+        try {
+            tweet.reTweet = Tweet.fromJson(jSonObject.getJSONObject("retweeted_status"));
+            Log.i("Tweet","This is a retweet");
+        } catch (Exception e) {
+            tweet.reTweet = null;
+        }
+        tweet.id = new BigInteger(jSonObject.getString("id"));
         tweet.body = jSonObject.getString("text");
         tweet.createdAt = jSonObject.getString("created_at");
         tweet.retweets = jSonObject.getInt("retweet_count");
         tweet.retweeted = jSonObject.getBoolean("retweeted");
         tweet.likes = jSonObject.getInt("favorite_count");
         tweet.liked = jSonObject.getBoolean("favorited");
-        tweet.id = new BigInteger(jSonObject.getString("id"));
+
         Log.i("TweetID","ID: " + tweet.id);
         if (TimelineActivity.maxId == null) {
             TimelineActivity.maxId = new BigInteger(tweet.id.toString());

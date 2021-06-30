@@ -8,6 +8,7 @@
 
     <ImageView
         android:id="@+id/ivProfileImage"
+        android:transitionName="profile"
         android:layout_width="125dp"
         android:layout_height="125dp"
         android:layout_alignParentStart="true"
@@ -20,6 +21,7 @@
 
     <TextView
         android:id="@+id/tvName"
+        android:transitionName="name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -36,6 +38,7 @@
 
     <TextView
         android:id="@+id/tvScreenName"
+        android:transitionName="screenName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvName"
@@ -47,6 +50,7 @@
 
     <TextView
         android:id="@+id/tvBody"
+        android:transitionName="body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivProfileImage"
@@ -60,6 +64,7 @@
 
     <ImageView
         android:id="@+id/ivMedia"
+        android:transitionName="media"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvBody"
@@ -90,6 +95,7 @@
 
     <ImageView
         android:id="@+id/ivRetweet"
+        android:transitionName="retweet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/view"
@@ -100,6 +106,7 @@
 
     <TextView
         android:id="@+id/tvRetweetCount"
+        android:transitionName="retweetCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/view"
@@ -111,6 +118,7 @@
 
     <ImageView
         android:id="@+id/ivLike"
+        android:transitionName="like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/view"
@@ -121,6 +129,7 @@
 
     <TextView
         android:id="@+id/tvLikeCount"
+        android:transitionName="likeCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/view"
@@ -140,6 +149,7 @@
         android:layout_marginStart="-35dp"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="0dp"
+        android:textSize="12dp"
         android:background="@color/light_gray"/>
 
 </RelativeLayout>

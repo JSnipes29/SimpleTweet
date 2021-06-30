@@ -57,7 +57,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
         client = TwitterApp.getRestClient(this);
         // Initialize the list of tweets and adapter
         tweets = new ArrayList<>();
-        adapter = new TweetsAdapter(this, tweets);
+        adapter = new TweetsAdapter(this, tweets, this);
         maxId  = null;
         // Configure the recycler view
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
