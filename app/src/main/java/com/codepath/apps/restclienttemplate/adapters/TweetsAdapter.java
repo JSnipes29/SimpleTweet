@@ -1,11 +1,13 @@
 package com.codepath.apps.restclienttemplate.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,10 +18,12 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterApp;
 import com.codepath.apps.restclienttemplate.TwitterClient;
+import com.codepath.apps.restclienttemplate.activities.DetailsTweetActivity;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.jetbrains.annotations.NotNull;
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -82,9 +86,10 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
 
     // Define a viewholder
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder  {
 
         public static final String TAG = "ViewHolder";
+        RelativeLayout rlRootTweet;
         ImageView ivProfileImage;
         TextView tvBody;
         TextView tvScreenName;
@@ -101,6 +106,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            rlRootTweet = itemView.findViewById(R.id.rlRootTweet);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
@@ -121,6 +127,15 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvLikeCount.setText(Tweet.formatCount(tweet.likes));
             tvRetweetCount.setText(Tweet.formatCount(tweet.retweets));
             final Tweet copy = tweet;
+            rlRootTweet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG, "Clicked tweet");
+                    Intent intent = new Intent(context, DetailsTweetActivity.class);
+                    intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(copy));
+                    context.startActivity(intent);
+                }
+            });
             ivLike.setClickable(true);
             if (tweet.liked) {
                 ivLike.setImageResource(R.drawable.ic_vector_heart);
@@ -219,5 +234,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 ivMedia.getLayoutParams().width = 0;
             }
         }
+
     }
 }
