@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -23,8 +24,13 @@ public class Tweet {
     public String body;
     public String createdAt;
     public User user;
+    public int retweets;
+    public boolean retweeted;
+    public int likes;
+    public boolean liked;
     public List<Media> media;
-    public int id;
+    public BigInteger id;
+
 
     // empty constructor needed by Parceler library
     public Tweet() {};
@@ -34,10 +40,17 @@ public class Tweet {
         Tweet tweet = new Tweet();
         tweet.body = jSonObject.getString("text");
         tweet.createdAt = jSonObject.getString("created_at");
-        tweet.id = jSonObject.getInt("id");
+        tweet.retweets = jSonObject.getInt("retweet_count");
+        tweet.retweeted = jSonObject.getBoolean("retweeted");
+        tweet.likes = jSonObject.getInt("favorite_count");
+        tweet.liked = jSonObject.getBoolean("favorited");
+        tweet.id = new BigInteger(jSonObject.getString("id"));
         Log.i("TweetID","ID: " + tweet.id);
-        if (tweet.id > 1 && tweet.id < TimelineActivity.maxId) {
-            TimelineActivity.maxId = tweet.id - 1;
+        if (TimelineActivity.maxId == null) {
+            TimelineActivity.maxId = new BigInteger(tweet.id.toString());
+        }
+        if (tweet.id.compareTo(new BigInteger("1")) >= 1 && tweet.id.compareTo(TimelineActivity.maxId) <= -1) {
+            TimelineActivity.maxId = tweet.id.subtract(new BigInteger("1"));
         }
         tweet.user = User.fromJson(jSonObject.getJSONObject("user"));
         try {
@@ -79,5 +92,9 @@ public class Tweet {
         }
 
         return relativeDate;
+    }
+
+    public static String formatCount(int count) {
+        return String.format("%,d", count);
     }
 }

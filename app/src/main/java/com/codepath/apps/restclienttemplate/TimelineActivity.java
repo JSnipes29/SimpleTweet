@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.parceler.Parcels;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class TimelineActivity extends AppCompatActivity {
     ActivityTimelineBinding binding;
     MenuItem miActionProgressItem;
     EndlessRecyclerViewScrollListener scrollListener;
-    public static int maxId;
+    public static BigInteger maxId;
     private final int REFRESH = 0;
 
     @Override
@@ -50,7 +51,7 @@ public class TimelineActivity extends AppCompatActivity {
         // Initialize the list of tweets and adapter
         tweets = new ArrayList<>();
         adapter = new TweetsAdapter(this, tweets);
-        maxId  = Integer.MAX_VALUE;
+        maxId  = null;
         // Configure the recycler view
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         binding.rvTweets.setLayoutManager(linearLayoutManager);

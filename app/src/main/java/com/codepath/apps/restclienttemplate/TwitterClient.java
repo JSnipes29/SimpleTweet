@@ -9,6 +9,8 @@ import com.github.scribejava.apis.FlickrApi;
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 
+import java.math.BigInteger;
+
 /*
  * 
  * This is the object responsible for communicating with a REST API. 
@@ -53,12 +55,12 @@ public class TwitterClient extends OAuthBaseClient {
 		client.get(apiUrl, params, handler);
 	}
 
-	public void getHomeTimeline(JsonHttpResponseHandler handler, int maxId) {
+	public void getHomeTimeline(JsonHttpResponseHandler handler, BigInteger maxId) {
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		// Can specify query string params directly or through RequestParams.
 		RequestParams params = new RequestParams();
 		params.put("count", 25);
-		params.put("max_id", maxId);
+		params.put("max_id", maxId.toString());
 		client.get(apiUrl, params, handler);
 	}
 
@@ -67,6 +69,35 @@ public class TwitterClient extends OAuthBaseClient {
 		// Can specify query string params directly or through RequestParams.
 		RequestParams params = new RequestParams();
 		params.put("status", tweetContent);
+		client.post(apiUrl, params, "",handler);
+	}
+
+	public void retweet(BigInteger id, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/retweet/"+ id.toString() + ".json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		params.put("id", id.toString());
+		client.post(apiUrl, params, "",handler);
+	}
+	public void unRetweet(BigInteger id, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/unretweet/"+ id.toString() + ".json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		params.put("id", id.toString());
+		client.post(apiUrl, params, "", handler);
+	}
+	public void like(BigInteger id, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("favorites/create.json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		params.put("id", id.toString());
+		client.post(apiUrl, params, "",handler);
+	}
+	public void unLike(BigInteger id, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("favorites/destroy.json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		params.put("id", id.toString());
 		client.post(apiUrl, params, "",handler);
 	}
 	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
