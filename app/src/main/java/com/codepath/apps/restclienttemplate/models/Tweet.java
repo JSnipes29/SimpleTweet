@@ -3,8 +3,7 @@ package com.codepath.apps.restclienttemplate.models;
 import android.text.format.DateUtils;
 import android.util.Log;
 
-import com.codepath.apps.restclienttemplate.TimelineActivity;
-import com.facebook.stetho.inspector.jsonrpc.JsonRpcException;
+import com.codepath.apps.restclienttemplate.activities.TimelineActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;

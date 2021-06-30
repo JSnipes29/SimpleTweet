@@ -1,7 +1,8 @@
-package com.codepath.apps.restclienttemplate;
+package com.codepath.apps.restclienttemplate.activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -13,7 +14,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.codepath.apps.restclienttemplate.EndlessRecyclerViewScrollListener;
+import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.adapters.TweetsAdapter;
+import com.codepath.apps.restclienttemplate.TwitterApp;
+import com.codepath.apps.restclienttemplate.TwitterClient;
 import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
+import com.codepath.apps.restclienttemplate.fragments.ComposeTweetFragment;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
@@ -27,7 +34,7 @@ import java.util.List;
 
 import okhttp3.Headers;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity implements ComposeTweetFragment.ComposeTweetListener {
 
     public static final String TAG = "TimelineActivity";
     private final int REQUEST_CODE = 20;
@@ -143,8 +150,9 @@ public class TimelineActivity extends AppCompatActivity {
             // Compose new tweet
             case R.id.compose:
                 Log.i(TAG, "Compose a new tweet");
-                Intent compose = new Intent(this, ComposeActivity.class);
-                startActivityForResult(compose, REQUEST_CODE);
+                composeTweet();
+                //Intent compose = new Intent(this, ComposeActivity.class);
+                //startActivityForResult(compose, REQUEST_CODE);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -234,5 +242,21 @@ public class TimelineActivity extends AppCompatActivity {
             }
         }, maxId);
         Log.i(TAG, "Max ID: " + maxId);
+    }
+
+    private void composeTweet() {
+        FragmentManager fm = getSupportFragmentManager();
+        ComposeTweetFragment composeTweet = ComposeTweetFragment.newInstance("Compose Tweet", "Name");
+        composeTweet.show(fm, "fragment_alert");
+    }
+
+    @Override
+    public void onFinishComposeTweet(Tweet tweet) {
+        // Updated the recycler view
+        // Modify data source of tweet
+        tweets.add(0, tweet);
+        // Update the adapter
+        adapter.notifyItemInserted(0);
+        binding.rvTweets.smoothScrollToPosition(0);
     }
 }
