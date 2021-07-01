@@ -82,24 +82,24 @@
 
     <ImageView
         android:id="@+id/ivLike"
-        android:transitionName="like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivMedia"
-        android:layout_marginStart="75dp"
+        android:layout_marginStart="25dp"
         android:layout_marginTop="10dp"
-        android:layout_toEndOf="@+id/ivRetweet"
+        android:layout_toEndOf="@+id/tvRetweetCount"
+        android:transitionName="like"
         app:srcCompat="@drawable/ic_vector_heart_stroke" />
 
     <ImageView
         android:id="@+id/ivRetweet"
-        android:transitionName="retweet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivMedia"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="55dp"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/ivReply"
+        android:transitionName="retweet"
         app:srcCompat="@drawable/ic_vector_retweet_stroke" />
 
     <TextView
@@ -137,6 +137,16 @@
         android:layout_marginStart="55dp"
         android:layout_marginTop="2dp"
         android:textSize="0dp"
-        tools:text="Elon Musk Retweeted" />
+        tools:text="Jermaine Retweeted" />
+
+    <ImageView
+        android:id="@+id/ivReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivMedia"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="10dp"
+        app:srcCompat="@drawable/vector_compose_dm_fab" />
 
 </RelativeLayout>

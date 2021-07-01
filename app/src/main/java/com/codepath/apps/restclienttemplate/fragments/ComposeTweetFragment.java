@@ -55,6 +55,8 @@ public class ComposeTweetFragment extends DialogFragment {
     private EditText etCompose;
     private Button btnTweet;
     TwitterClient client;
+    String screenName;
+    int reply;
     public ComposeTweetFragment() {
         // Required empty public constructor
     }
@@ -106,6 +108,9 @@ public class ComposeTweetFragment extends DialogFragment {
         etCompose = (EditText) view.findViewById(R.id.etCompose);
         btnTweet = (Button) view.findViewById(R.id.btnTweet);
         client = TwitterApp.getRestClient(view.getContext());
+        final String id = getArguments().getString("id");
+        Log.i(TAG, "The id is: " + id);
+        screenName = getArguments().getString("screenName");
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,13 +125,15 @@ public class ComposeTweetFragment extends DialogFragment {
                 }
                 Log.i(TAG, "User tweeted: " + tweetContent);
                 // Make an API call to Twitter
-                client.publishTweet(tweetContent, new JsonHttpResponseHandler() {
+                Log.i(TAG, "Reply tweet: " + id);
+                client.publishTweet(tweetContent, id, screenName, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Headers headers, JSON json) {
                         Log.i(TAG, "onSuccess to publish tweet");
                         try {
                             Tweet tweet = Tweet.fromJson(json.jsonObject);
                             Log.i(TAG, "Publish tweet: " + tweet);
+
                             ComposeTweetListener listener = (ComposeTweetListener)getActivity();
                             listener.onFinishComposeTweet(tweet);
                             dismiss();

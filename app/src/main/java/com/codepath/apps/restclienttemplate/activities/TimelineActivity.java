@@ -47,6 +47,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
     public static BigInteger maxId;
     private final int REFRESH = 0;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

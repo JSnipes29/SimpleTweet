@@ -3,6 +3,7 @@ package com.codepath.apps.restclienttemplate.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -13,8 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -23,6 +26,7 @@ import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterApp;
 import com.codepath.apps.restclienttemplate.TwitterClient;
 import com.codepath.apps.restclienttemplate.activities.DetailsTweetActivity;
+import com.codepath.apps.restclienttemplate.fragments.ComposeTweetFragment;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
@@ -36,12 +40,12 @@ import okhttp3.Headers;
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder>{
 
     Context context;
-    Activity mContext;
+    AppCompatActivity mContext;
     List<Tweet> tweets;
 
 
     // Pass in the context and list of tweets
-    public TweetsAdapter(Context context, List<Tweet> tweets, Activity a) {
+    public TweetsAdapter(Context context, List<Tweet> tweets, AppCompatActivity a) {
         this.tweets = tweets;
         this.context = context;
         this.mContext = a;
@@ -103,6 +107,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvTimeSince;
         ImageView ivMedia;
         TextView tvUserRetweeted;
+        ImageView ivReply;
         final ImageView ivRetweet;
         final ImageView ivLike;
         final TextView tvRetweetCount;
@@ -126,12 +131,15 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvLikeCount = itemView.findViewById(R.id.tvLikeCount);
             client = TwitterApp.getRestClient(context);
             tvUserRetweeted = itemView.findViewById(R.id.tvUserRetweeted);
+            ivReply = itemView.findViewById(R.id.ivReply);
         }
         public void bind(Tweet tweet) {
             if (tweet.reTweet != null) {
                 tvUserRetweeted.setText(tweet.user.name + " Retweeted");
                 tvUserRetweeted.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                 tweet = tweet.reTweet;
+            } else {
+                tvUserRetweeted.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 0);
             }
             tvBody.setText(tweet.body);
             tvScreenName.setText("@" + tweet.user.screenName);
@@ -158,6 +166,19 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     ActivityOptionsCompat options = ActivityOptionsCompat.
                             makeSceneTransitionAnimation(mContext, p1, p2, p3, p4, p5, p6, p7, p8, p9);
                     context.startActivity(intent, options.toBundle());
+                }
+            });
+            ivReply.setClickable(true);
+            ivReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentManager fm = mContext.getSupportFragmentManager();
+                    ComposeTweetFragment composeTweet = ComposeTweetFragment.newInstance("Compose Tweet", "Name");
+                    Bundle bundle = new Bundle();
+                    bundle.putString("screenName",copy.user.screenName);
+                    bundle.putString("id", copy.id.toString());
+                    composeTweet.setArguments(bundle);
+                    composeTweet.show(fm, "fragment_alert");
                 }
             });
             ivLike.setClickable(true);
