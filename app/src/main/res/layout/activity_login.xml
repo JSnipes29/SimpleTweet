@@ -6,6 +6,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/twitter_blue"
     tools:context=".LoginActivity" >
 
     <Button
@@ -14,6 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
         android:onClick="loginToRest"
+        android:background="@color/light_gray"
         android:text="@string/login_label" />
 
 </RelativeLayout>
