@@ -3,6 +3,12 @@ package com.codepath.apps.restclienttemplate.models;
 import android.text.format.DateUtils;
 import android.util.Log;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import com.codepath.apps.restclienttemplate.activities.TimelineActivity;
 
 import org.json.JSONArray;
@@ -18,18 +24,32 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 @Parcel
+@Entity(foreignKeys = @ForeignKey(entity=User.class, parentColumns="id", childColumns="userId"))
 public class Tweet {
 
+    @ColumnInfo
     public String body;
+    @ColumnInfo
     public String createdAt;
+    @Ignore
     public User user;
+    @ColumnInfo
     public int retweets;
+    @ColumnInfo
     public boolean retweeted;
+    @ColumnInfo
     public int likes;
+    @ColumnInfo
     public boolean liked;
+    @ColumnInfo
+    public String userId;
+
     public List<Media> media;
-    public BigInteger id;
+    @ColumnInfo
     public Tweet reTweet;
+    @ColumnInfo
+    @PrimaryKey
+    public BigInteger id;
 
 
     // empty constructor needed by Parceler library
@@ -60,6 +80,7 @@ public class Tweet {
             TimelineActivity.maxId = tweet.id.subtract(new BigInteger("1"));
         }
         tweet.user = User.fromJson(jSonObject.getJSONObject("user"));
+        tweet.userId = tweet.user.id;
         try {
             JSONObject entries = jSonObject.getJSONObject("extended_entities");
             Log.i("Tweet", "We have entries!");
