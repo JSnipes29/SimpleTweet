@@ -26,6 +26,7 @@ import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterApp;
 import com.codepath.apps.restclienttemplate.TwitterClient;
 import com.codepath.apps.restclienttemplate.activities.DetailsTweetActivity;
+import com.codepath.apps.restclienttemplate.activities.DetailsUserActivity;
 import com.codepath.apps.restclienttemplate.fragments.ComposeTweetFragment;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
@@ -166,6 +167,22 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     ActivityOptionsCompat options = ActivityOptionsCompat.
                             makeSceneTransitionAnimation(mContext, p1, p2, p3, p4, p5, p6, p7, p8, p9);
                     context.startActivity(intent, options.toBundle());
+                }
+            });
+            ivProfileImage.setClickable(true);
+            ivProfileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.i(TAG, "Clicked Profile Image");
+                    Intent intent = new Intent(context, DetailsUserActivity.class);
+                    intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(copy));
+                    Pair<View, String> p1 = Pair.create((View)ivProfileImage, "profile");
+                    Pair<View, String> p2 = Pair.create((View)tvScreenName, "screenName");
+                    Pair<View, String> p3 = Pair.create((View)tvName, "name");
+                    ActivityOptionsCompat options = ActivityOptionsCompat.
+                            makeSceneTransitionAnimation(mContext, p1, p2, p3);
+                    context.startActivity(intent, options.toBundle());
+
                 }
             });
             ivReply.setClickable(true);
