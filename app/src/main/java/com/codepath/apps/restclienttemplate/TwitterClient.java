@@ -10,6 +10,7 @@ import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 
 import java.math.BigInteger;
+import java.util.List;
 
 /*
  * 
@@ -61,6 +62,34 @@ public class TwitterClient extends OAuthBaseClient {
 		RequestParams params = new RequestParams();
 		params.put("count", 25);
 		params.put("max_id", maxId.toString());
+		client.get(apiUrl, params, handler);
+	}
+
+	public void getFollowersFriends(JsonHttpResponseHandler handler, BigInteger id, int code) {
+		String apiUrl = getApiUrl("followers/ids.json");
+		if (code == 1) {
+			apiUrl = getApiUrl("friends/ids.json");
+		}
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		params.put("user_id", id.toString());
+		params.put("count", 100);
+		client.get(apiUrl, params, handler);
+	}
+
+
+	public void getUsers(JsonHttpResponseHandler handler, List<String> ids) {
+		String apiUrl = getApiUrl("users/lookup.json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		StringBuilder users = new StringBuilder();
+		for (int i = 0; i < ids.size(); i++) {
+			if (i == ids.size() - 1) {
+				users.append(ids.get(i));
+			}
+			users.append(ids.get(i) + ", ");
+		}
+		params.put("user_id", users.toString());
 		client.get(apiUrl, params, handler);
 	}
 
