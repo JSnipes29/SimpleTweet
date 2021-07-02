@@ -164,6 +164,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            Log.i(TAG, "Coming back");
             // Get data from the intent (tweet)
             Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
             // Updated the recycler view
@@ -172,6 +173,18 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
             // Update the adapter
             adapter.notifyItemInserted(0);
             binding.rvTweets.smoothScrollToPosition(0);
+        }
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            // Retrieve the updated tweet
+            Tweet tweet = (Tweet) Parcels.unwrap(data.getParcelableExtra(Tweet.class.getSimpleName()));
+            // Extract the original position of the edited tweet
+            int position = data.getExtras().getInt("position");
+            // Update the model with the new tweet
+            tweets.set(position, tweet);
+            Log.i(TAG, "Tweet: " + tweet);
+            Log.i(TAG, "" + position);
+            // Notify the adapter
+            adapter.notifyItemChanged(position);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -260,4 +273,5 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
         adapter.notifyItemInserted(0);
         binding.rvTweets.smoothScrollToPosition(0);
     }
+
 }

@@ -81,7 +81,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         // Get the data at position
         Tweet tweet = tweets.get(position);
         // Bind the tweet with the viewholder
-        holder.bind(tweet);
+        holder.bind(position, tweet);
 
     }
 
@@ -134,8 +134,13 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvUserRetweeted = itemView.findViewById(R.id.tvUserRetweeted);
             ivReply = itemView.findViewById(R.id.ivReply);
         }
-        public void bind(Tweet tweet) {
+        public void bind(int position, Tweet tweet) {
+            final int pos = position;
+            if (tweet == null) {
+                return;
+            }
             if (tweet.reTweet != null) {
+                Log.i(TAG, tweet.user.screenName);
                 tvUserRetweeted.setText(tweet.user.name + " Retweeted");
                 tvUserRetweeted.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                 tweet = tweet.reTweet;
@@ -155,6 +160,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     Log.i(TAG, "Clicked tweet");
                     Intent intent = new Intent(context, DetailsTweetActivity.class);
                     intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(copy));
+                    intent.putExtra("position", pos);
                     Pair<View, String> p1 = Pair.create((View)ivProfileImage, "profile");
                     Pair<View, String> p2 = Pair.create((View)tvScreenName, "screenName");
                     Pair<View, String> p3 = Pair.create((View)tvName, "name");
@@ -166,7 +172,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     Pair<View, String> p9 = Pair.create((View)tvRetweetCount, "likeCount");
                     ActivityOptionsCompat options = ActivityOptionsCompat.
                             makeSceneTransitionAnimation(mContext, p1, p2, p3, p4, p5, p6, p7, p8, p9);
-                    context.startActivity(intent, options.toBundle());
+                    //context.startActivity(intent, options.toBundle());
+                    mContext.startActivityForResult(intent, 1 ,options.toBundle());
                 }
             });
             ivProfileImage.setClickable(true);
@@ -182,6 +189,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     ActivityOptionsCompat options = ActivityOptionsCompat.
                             makeSceneTransitionAnimation(mContext, p1, p2, p3);
                     context.startActivity(intent, options.toBundle());
+
 
                 }
             });
@@ -210,6 +218,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     if (copy.liked) {
                         copy.liked = false;
                         ivLike.setImageResource(R.drawable.ic_vector_heart_stroke);
+                        tvLikeCount.setText("" + Tweet.formatCount((Integer.parseInt(tvLikeCount.getText().toString().replaceAll(",", "")) - 1)));
+                        copy.likes = copy.likes - 1;
                         client.unLike(copy.id, new JsonHttpResponseHandler() {
                             @Override
                             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -224,6 +234,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     } else {
                         copy.liked = true;
                         ivLike.setImageResource(R.drawable.ic_vector_heart);
+                        tvLikeCount.setText("" + Tweet.formatCount((Integer.parseInt(tvLikeCount.getText().toString().replaceAll(",","")) + 1)));
+                        copy.likes = copy.likes + 1;
                         client.like(copy.id, new JsonHttpResponseHandler() {
                             @Override
                             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -252,6 +264,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     if (copy.retweeted) {
                         copy.retweeted = false;
                         ivRetweet.setImageResource(R.drawable.ic_vector_retweet_stroke);
+                        tvRetweetCount.setText("" + Tweet.formatCount((Integer.parseInt(tvRetweetCount.getText().toString().replaceAll(",", "")) - 1)));
+                        copy.retweets = copy.retweets - 1;
                         client.unRetweet(copy.id, new JsonHttpResponseHandler() {
                             @Override
                             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -266,6 +280,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     } else {
                         copy.retweeted = true;
                         ivRetweet.setImageResource(R.drawable.ic_vector_retweet);
+                        tvRetweetCount.setText("" + Tweet.formatCount((Integer.parseInt(tvRetweetCount.getText().toString().replaceAll(",", "")) + 1)));
+                        copy.retweets = copy.retweets + 1;
                         client.retweet(copy.id, new JsonHttpResponseHandler() {
                             @Override
                             public void onSuccess(int statusCode, Headers headers, JSON json) {
